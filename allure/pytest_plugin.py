@@ -22,6 +22,13 @@ def pytest_addoption(parser):
                                            default=None,
                                            help="Generate Allure report in the specified directory (may not exist)")
 
+    parser.getgroup("reporting").addoption('--allure_maxcases',
+                                           action="store",
+                                           dest="maxcases",
+                                           help="""If count of test cases is passed and greater than defined, then allure will
+                                           display first count which was defined.""",
+                                           default=None)
+
     severities = [v for (_, v) in all_of(Severity)]
 
     def label_type(name, legal_values=set()):
@@ -68,15 +75,6 @@ def pytest_addoption(parser):
                                          type=label_type(name=Label.STORY),
                                          help="""Comma-separated list of story names.
                                          Run tests that have at least one of the specified story labels.""")
-
-    parser.getgroup("general").addoption('--compress_passed_testcases',
-                                         action="store",
-                                         dest="compresspassed",
-                                         metavar="STORIES_SET",
-                                         default=100,
-                                         type=label_type(name=Label.FEATURE),
-                                         help="""If count of test cases is passed and greater than 100, then allure will
-                                         display first 100.""")
 
 
 def pytest_configure(config):
@@ -469,6 +467,8 @@ class AllureAgregatingListener(object):
     def __init__(self, impl, config):
         self.impl = impl
 
+        self.maxcases = config.option.maxcases
+
         # module's nodeid => TestSuite object
         self.suites = {}
 
@@ -569,6 +569,7 @@ class AllureCollectionListener(object):
             self.impl.start_suite(name='test_collection_phase',
                                   title='Collection phase',
                                   description='This is the tests collection phase. Failures are modules that failed to collect.')
+
             for fail in self.fails:
                 self.impl.start_case(name=fail.name.split(".")[-1])
                 self.impl.stop_case(status=fail.status, message=fail.message, trace=fail.trace)
