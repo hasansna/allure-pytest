@@ -68,6 +68,7 @@ def pytest_addoption(parser):
                                          type=label_type(name=Label.STORY),
                                          help="""Comma-separated list of story names.
                                          Run tests that have at least one of the specified story labels.""")
+
     parser.getgroup("general").addoption('--compress_passed_testcases',
                                          action="store",
                                          dest="compresspassed",
