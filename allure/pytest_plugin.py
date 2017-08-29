@@ -22,6 +22,11 @@ def pytest_addoption(parser):
                                            default=None,
                                            help="Generate Allure report in the specified directory (may not exist)")
 
+    parser.getgroup("reporting").addoption('--allure_optimizereport',
+                                           dest="optimizereport",
+                                           help="""Removes attachments,steps or labels from test cases. Possible comma separated values: attachments,labels,steps""",
+                                           default=None)
+
     severities = [v for (_, v) in all_of(Severity)]
 
     def label_type(name, legal_values=set()):
@@ -460,6 +465,11 @@ class AllureAgregatingListener(object):
     def __init__(self, impl, config):
         self.impl = impl
 
+        # optimizereport must be declared
+        self.optimizereport = []
+        if config.option.optimizereport:
+            self.optimizereport = config.option.optimizereport.split(',')
+
         # module's nodeid => TestSuite object
         self.suites = {}
 
@@ -486,6 +496,13 @@ class AllureAgregatingListener(object):
                 refined_tests = []
                 for t in s.tests[::-1]:
                     if t.id not in known_ids:
+                        if t.status == 'passed' and self.optimizereport:
+                            if 'attachments' in self.optimizereport:
+                                t.attachments = []
+                            if 'steps' in self.optimizereport:
+                                t.steps = []
+                            if 'labels' in self.optimizereport:
+                                t.labels = []
                         known_ids.add(t.id)
                         refined_tests.append(t)
                 s.tests = refined_tests[::-1]
@@ -514,8 +531,9 @@ class AllureAgregatingListener(object):
 
             self.impl.environment.update(environment)
 
-            for a in testcase.iter_attachments():
-                self.write_attach(a)
+            if testcase.status != 'passed' or 'attachments' not in self.optimizereport:
+                for a in testcase.iter_attachments():
+                    self.write_attach(a)
 
             self.suites.setdefault(module_id, TestSuite(name=module_name,
                                                         description=module_doc,
