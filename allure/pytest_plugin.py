@@ -24,7 +24,8 @@ def pytest_addoption(parser):
 
     parser.getgroup("reporting").addoption('--allure_optimizereport',
                                            dest="optimizereport",
-                                           help="""Removes attachments,steps or labels from test cases. Possible comma separated values: attachments,labels,steps""",
+                                           help="""Removes attachments,steps or labels from PASSED test cases. Possible
+                                           comma separated values: attachments,labels,steps""",
                                            default=None)
 
     severities = [v for (_, v) in all_of(Severity)]
