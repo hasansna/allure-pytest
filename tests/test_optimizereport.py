@@ -14,13 +14,13 @@ import pytest
 
 def xml_test(report):
     if report.find('.//attachment') != None:
-        print "attachment found in report"
+        print ("attachment found in report")
         assert False
     if report.find('.//label') != None:
-        print "Label found in report"
+        print ("attachment found in report")
         assert False
     if report.find('.//step') != None:
-        print "step found in report"
+        print ("attachment found in report")
         assert False
 
 def test_smoke(report_for):
