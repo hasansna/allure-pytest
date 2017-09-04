@@ -278,12 +278,16 @@ More details about allure environment you can know from documentation_.
 
 .. _documentation: https://github.com/allure-framework/allure-core/wiki/Environment
 
+
 Report optimization
 ======================
 To remove steps,attachments or labels from PASSED test cases --allure_optimizereport parammeter can be useed. This is
 usefull in cases when testsuite have a lot of testcases.
+
 .. code:: python
-     py.test ./my-test --alluredir=/path/to/report --allure_optimizereport=attachments,steps,labels
+
+ py.test ./my-test --alluredir=/path/to/report --allure_optimizereport=attachments,steps,labels
+
 
 Development
 ===========
