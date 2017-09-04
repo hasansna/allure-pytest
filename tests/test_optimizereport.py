@@ -12,29 +12,33 @@ Created on Aug 30, 2017
 
 import pytest
 
-
-from hamcrest import assert_that, is_not, has_property, contains, has_entries, \
-    has_properties, has_item, anything, all_of, any_of,equal_to
-from allure.constants import AttachmentType
-from allure.utils import all_of
-
-import pprint
+def xml_test(report):
+    if report.find('.//attachment') != None:
+        print "attachment found in report"
+        assert False
+    if report.find('.//label') != None:
+        print "Label found in report"
+        assert False
+    if report.find('.//step') != None:
+        print "step found in report"
+        assert False
 
 def test_smoke(report_for):
 
     extra_run_args = list()
-    extra_run_args.extend(['--allure_stories', 'attachments,steps,labels'])
+
+    extra_run_args.extend(['--allure_optimizereport', 'attachments,steps,labels'])
 
     report = report_for("""
     import pytest
     import allure
 
-    def test_x():
-        %s.attach('Foo', 'Bar')
-    """ % extra_run_args)
+    def test():
+        with pytest.allure.step(title='step_1'):
+            assert True
+        pytest.allure.attach('Foo', 'Bar')
+    """ , extra_run_args=extra_run_args)
 
-    print "Report!!!"
-    pprint.pprint(report)
+    xml_test(report)
 
-    assert_that(is_not(report.findall('test-cases/test-case/attachments/attachment'),
-                contains(has_property('attrib', has_entries(title='Foo')))))
+
