@@ -26,8 +26,9 @@ def pytest_addoption(parser):
                                            dest="casemerge",
                                            default=0,
                                            type=int,
-                                           help="""Splits the testsuite into  if its testcase count is greater than in
-                                           --allure_casemerge""")
+                                           help="""If case count per testsuite is greater than it is define in
+                                            --allure_casemerge, then cases gets transformed into steps and included to
+                                            new testcases.""")
 
     severities = [v for (_, v) in all_of(Severity)]
 
