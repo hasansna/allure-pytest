@@ -557,7 +557,7 @@ class AllureAgregatingListener(object):
             steps.append(
                 TestStep(name=t.name,
                          status=t.status,
-                         title=t.name,
+                         title="TestCase:"+t.name,
                          start=t.start,
                          stop=t.stop,
                          attachments=t.attachments,
@@ -576,7 +576,7 @@ class AllureAgregatingListener(object):
                              labels=[],
                              status=status,
                              steps=steps,
-                             failure=failure,
+                             failure = failure,
                              id=str(uuid.uuid4()))
                 )
                 start = 0
