@@ -487,7 +487,7 @@ class AllureAgregatingListener(object):
         """
 
         if self.casemerge > 0:
-            for k in self.suites.keys():
+            for s in self.suites.values():
                 s = self.suites.get(k)
                 if len(s.tests) > self.casemerge:
                     s.tests = self.pytest_casemerge(s)
