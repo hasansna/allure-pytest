@@ -19,7 +19,8 @@ def test_smoke(report_for):
     report = report_for("""
     import pytest
     import allure
-    def test_passed1():
+    @pytest.mark.parametrize("input", [1,2,3])
+    def test_passed1(input):
         assert 1==1
 
     def test_passed2():
@@ -34,3 +35,24 @@ def test_smoke(report_for):
     for case_name in ['range_from_1_to_2', 'range_from_3_to_3']:
         xpath=".//a[text()=\"%s\"]" % case_name
         assert report.xpath(xpath) is not None
+
+def test_failed_cases_are_not_touched(report_for):
+
+    extra_run_args = list()
+
+    extra_run_args.extend(['--allure_casemerge=2'])
+
+    report = report_for("""
+    import pytest
+    import allure
+    def test_passed1():
+        assert 1==1
+
+    def test_passed2():
+        assert 1==1
+
+    def test_failed1():
+        assert 1!=1
+    """ , extra_run_args=extra_run_args)
+
+    assert len(report.findall('test-cases/test-case')) == 2
