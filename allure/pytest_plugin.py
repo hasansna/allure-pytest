@@ -536,7 +536,7 @@ class AllureAgregatingListener(object):
                                                         stop=None)).tests.append(testcase)
 
     def pytest_casemerge(self, s):
-        return s.tests
+        tests = s.tests
 #        s.name += "_(MERGED)"
 #        steps = []
 #        tests = []
