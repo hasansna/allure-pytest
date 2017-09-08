@@ -14,7 +14,7 @@ def test_smoke(report_for):
 
     extra_run_args = list()
 
-    extra_run_args.extend(['--allure_casemerge', '2'])
+    extra_run_args.extend(['--allure_casemerge=2'])
 
     report = report_for("""
     import pytest
@@ -29,8 +29,6 @@ def test_smoke(report_for):
         assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    #print len(report.findall('test-cases/test-case'))
-    #for test_case in report.findall('test-cases/test-case'):
-    #    print test_case.find('name').text
     assert len(report.findall('test-cases/test-case')) == 2
-
+    for test_case in report.findall('test-cases/test-case'):
+        assert test_case.find('name').text.endswith('_(MERGED)')
