@@ -535,7 +535,8 @@ class AllureAgregatingListener(object):
                                                         start=testcase.start,  # first case starts the suite!
                                                         stop=None)).tests.append(testcase)
 
-#    def pytest_casemerge(self, s):
+    def pytest_casemerge(self, s):
+        print "DUMMY TEST"
 #        s.name += "_(MERGED)"
 #        steps = []
 #        tests = []
