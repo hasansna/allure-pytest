@@ -101,8 +101,8 @@ def test_if_substeps_are_correct(report_for):
                 assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('steps/step/title').text='Step1'
-    assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('steps/steps/steps/title').text='Step2'
+    assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('steps/step/title').text == 'Step1'
+    assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('steps/steps/steps/title').text == 'Step2'
 
 def test_if_attachments_are_correct(report_for):
     _run_args = list()
@@ -118,4 +118,4 @@ def test_if_attachments_are_correct(report_for):
         assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('attachments/attachment').attrib['title']='Attachment'
+    assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('attachments/attachment').attrib['title'] == 'Attachment'
