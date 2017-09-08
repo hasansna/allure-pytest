@@ -21,10 +21,14 @@ def test_smoke(report_for):
     import allure
     @pytest.mark.parametrize("fake_input",  range(1, 11))
     def test_passed(fake_input):
-    with allure.step("Step #1" % fake_input):
+    with allure.step("Step #1"):
         with allure.step("Step #2"):
             assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert len(report.xpath('.//test-case')) == 3
+    print "Count of all test cases = " 
+    print len(report.findall('test-cases/test-case'))
+    for test_case in report.findall('test-cases/test-case'):
+        print test_case.find('name').text
+    assert len(report.findall('test-cases/test-case')) == 3
 
