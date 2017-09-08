@@ -22,14 +22,6 @@ def pytest_addoption(parser):
                                            default=None,
                                            help="Generate Allure report in the specified directory (may not exist)")
 
-    parser.getgroup("reporting").addoption('--allure_casemerge',
-                                           dest="casemerge",
-                                           default=0,
-                                           type=int,
-                                           help="""If case count per testsuite is greater than it is defined in
-                                           --allure_casemerge, then cases gets transformed into steps and included to
-                                           new testcases.""")
-
     severities = [v for (_, v) in all_of(Severity)]
 
     def label_type(name, legal_values=set()):
@@ -468,7 +460,6 @@ class AllureAgregatingListener(object):
     def __init__(self, impl, config):
         self.impl = impl
 
-        self.casemerge = config.option.casemerge
         # module's nodeid => TestSuite object
         self.suites = {}
 
@@ -486,11 +477,6 @@ class AllureAgregatingListener(object):
 
         TODO: do it in a better, more efficient way
         """
-
-        if self.casemerge > 0:
-            for s in self.suites.values():
-                if len(s.tests) > self.casemerge:
-                    s.tests = self.pytest_casemerge(s)
 
         for s in self.suites.values():
             if s.tests:  # nobody likes empty suites
@@ -537,52 +523,6 @@ class AllureAgregatingListener(object):
                                                         labels=[],
                                                         start=testcase.start,  # first case starts the suite!
                                                         stop=None)).tests.append(testcase)
-
-    def pytest_casemerge(self, s):
-        s.name += "_(MERGED)"
-        steps = []
-        tests = []
-        start = 0
-        counter = 0
-        cases = 0
-        passed_found = False
-        for t in s.tests:
-            if t.status != 'passed':  # if test is not green -> leave it as is
-                tests.append(t)
-            else:
-                passed_found = True
-                if start == 0:
-                    start = t.start
-                steps.append(
-                    TestStep(name=t.name,
-                             status=t.status,
-                             title="TestCase:" + t.name,
-                             start=t.start,
-                             stop=t.stop,
-                             attachments=t.attachments,
-                             steps=t.steps)
-                )
-                cases += 1
-            counter += 1
-            if (len(s.tests) == counter or cases == self.casemerge) and passed_found:
-                tests.append(
-                    TestCase(name='range_from_%s_to_%s' % (counter - cases + 1, counter),
-                             description="Test case count greater than %s. "
-                                         "Test cases transformed to steps." % (self.casemerge),
-                             start=start,
-                             stop=max(case.stop for case in s.tests),
-                             attachments=[],
-                             labels=[],
-                             status='passed',
-                             steps=steps,
-                             failure=None,
-                             id=str(uuid.uuid4()))
-                )
-                start = 0
-                steps = []
-                cases = 0
-                passed_found = False
-        return tests
 
 
 CollectFail = namedtuple('CollectFail', 'name status message trace')
