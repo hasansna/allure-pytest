@@ -26,8 +26,8 @@ def test_smoke(report_for):
             assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    print len(report.findall('test-cases/test-case'))
-    for test_case in report.findall('test-cases/test-case'):
-        print test_case.find('name').text
+    #print len(report.findall('test-cases/test-case'))
+    #for test_case in report.findall('test-cases/test-case'):
+    #    print test_case.find('name').text
     assert len(report.findall('test-cases/test-case')) == 3
 
