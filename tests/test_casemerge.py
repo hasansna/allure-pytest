@@ -30,5 +30,7 @@ def test_smoke(report_for):
     """ , extra_run_args=extra_run_args)
 
     assert len(report.findall('test-cases/test-case')) == 2
-    for test_case in report.findall('test-cases/test-case'):
-        assert test_case.find('name').text.endswith('_(MERGED)')
+    assert report.find('name').text.endswith('_(MERGED)')
+    for case_name in ['range_from_1_to_2', 'range_from_3_to_3']:
+        xpath=".//a[text()=\"%s\"]" % case_name
+        assert report.xpath(xpath) is not None
