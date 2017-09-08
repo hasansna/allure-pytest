@@ -3,8 +3,8 @@ Test parameter --allure_casemerge.
 - test if passed test cases are merged if total count of tests exceeds provided parameter value
 - test if test cases are not merged if total count of tests doeesn't exceed parameter value
 - test if merged tests remain their steps, status and attachments
-Created on Aug 30, 2017
-@author: hasansna
+Created on Sep 8, 2017
+@author: TietoLV
 """
 
 
@@ -26,5 +26,5 @@ def test_smoke(report_for):
             assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert len(report.find('.//test-case')) == 3
+    assert len(report.xpath('.//test-case')) == 3
 
