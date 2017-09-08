@@ -312,6 +312,7 @@ class LazyInitStepContext(StepContext):
         if hasattr(l, 'stack'):
             return l
 
+
 class AllureHelper(object):
 
     """
@@ -460,6 +461,7 @@ def pytest_namespace():
 
 class AllureAgregatingListener(object):
 
+
     """
     Listens to pytest hooks to generate reports for common tests.
     """
@@ -537,7 +539,6 @@ class AllureAgregatingListener(object):
                                                         start=testcase.start,  # first case starts the suite!
                                                         stop=None)).tests.append(testcase)
 
-
     def pytest_casemerge(self,s):
         s.name += "_(MERGED)"
         steps = []
@@ -588,6 +589,7 @@ CollectFail = namedtuple('CollectFail', 'name status message trace')
 
 
 class AllureCollectionListener(object):
+
 
     """
     Listens to pytest collection-related hooks
