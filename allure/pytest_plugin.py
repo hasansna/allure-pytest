@@ -490,7 +490,7 @@ class AllureAgregatingListener(object):
             if s.tests:  # nobody likes empty suites
                 if self.casemerge > 0:
                     if len(s.tests) > self.casemerge:
-                        s.tests = self.pytest_casemerge(s)
+                        s.tests = self.case_merge(s)
                 s.stop = max(case.stop for case in s.tests)
 
                 known_ids = set()
