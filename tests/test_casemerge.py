@@ -83,5 +83,22 @@ def test_casemerge_equals_total_case_count(report_for):
         assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert len(report.findall('test-cases/test-case')) == 1
-    assert report.find('name').text.endswith('_(MERGED)')
+    assert len(report.findall('test-cases/test-case')) == 3
+    assert not report.find('name').text.endswith('_(MERGED)')
+
+#def test_if_substeps_are_correct(report_for):
+#   _run_args = list()
+#
+#    extra_run_args.extend(['--allure_casemerge=2'])
+#
+#    report = report_for("""
+#    import pytest
+#    import allure
+#    @pytest.mark.parametrize("input", [1,2,3])
+#    def test_passed(input):
+#        with allure("Step1"):
+#            with allure("Step2"):
+#                assert 1==1
+#    """ , extra_run_args=extra_run_args)
+#
+#    report.xpath(xpath)
