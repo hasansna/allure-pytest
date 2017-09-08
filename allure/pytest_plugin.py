@@ -536,52 +536,50 @@ class AllureAgregatingListener(object):
                                                         stop=None)).tests.append(testcase)
 
     def case_merge(self, s):
-        test = 'DUMMY'
-#    def pytest_casemerge(self, s):
-#        s.name += "_(MERGED)"
-#        steps = []
-#        tests = []
-#        start = 0
-#        counter = 0
-#        cases = 0
-#        passed_found = False
-#        for t in s.tests:
-#            if t.status != 'passed':  # if test is not green -> leave it as is
-#                tests.append(t)
-#            else:
-#                passed_found = True
-#                if start == 0:
-#                    start = t.start
-#                steps.append(
-#                    TestStep(name=t.name,
-#                             status=t.status,
-#                             title="TestCase:" + t.name,
-#                             start=t.start,
-#                             stop=t.stop,
-#                             attachments=t.attachments,
-#                             steps=t.steps)
-#                )
-#                cases += 1
-#            counter += 1
-#            if (len(s.tests) == counter or cases == self.casemerge) and passed_found:
-#                tests.append(
-#                    TestCase(name='range_from_%s_to_%s' % (counter - cases + 1, counter),
-#                             description="Test case count greater than %s. "
-#                                         "Test cases transformed to steps." % (self.casemerge),
-#                             start=start,
-#                             stop=max(case.stop for case in s.tests),
-#                             attachments=[],
-#                             labels=[],
-#                             status='passed',
-#                             steps=steps,
-#                             failure=None,
-#                             id=str(uuid.uuid4()))
-#                )
-#                start = 0
-#                steps = []
-#                cases = 0
-#                passed_found = False
-#        return tests
+        s.name += "_(MERGED)"
+        steps = []
+        tests = []
+        start = 0
+        counter = 0
+        cases = 0
+        passed_found = False
+        for t in s.tests:
+            if t.status != 'passed':  # if test is not green -> leave it as is
+                tests.append(t)
+            else:
+                passed_found = True
+                if start == 0:
+                    start = t.start
+                steps.append(
+                    TestStep(name=t.name,
+                             status=t.status,
+                             title="TestCase:" + t.name,
+                             start=t.start,
+                             stop=t.stop,
+                             attachments=t.attachments,
+                             steps=t.steps)
+                )
+                cases += 1
+            counter += 1
+            if (len(s.tests) == counter or cases == self.casemerge) and passed_found:
+                tests.append(
+                    TestCase(name='range_from_%s_to_%s' % (counter - cases + 1, counter),
+                             description="Test case count greater than %s. "
+                                         "Test cases transformed to steps." % (self.casemerge),
+                             start=start,
+                             stop=max(case.stop for case in s.tests),
+                             attachments=[],
+                             labels=[],
+                             status='passed',
+                             steps=steps,
+                             failure=None,
+                             id=str(uuid.uuid4()))
+                )
+                start = 0
+                steps = []
+                cases = 0
+                passed_found = False
+        return tests
 
 
 CollectFail = namedtuple('CollectFail', 'name status message trace')
