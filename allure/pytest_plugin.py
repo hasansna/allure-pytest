@@ -22,13 +22,13 @@ def pytest_addoption(parser):
                                            default=None,
                                            help="Generate Allure report in the specified directory (may not exist)")
 
-#    parser.getgroup("reporting").addoption('--allure_casemerge',
-#                                           dest="casemerge",
-#                                           default=0,
-#                                           type=int,
-#                                           help="""If case count per testsuite is greater than it is defined in
-#                                           --allure_casemerge, then cases gets transformed into steps and included to
-#                                           new testcases.""")
+    parser.getgroup("reporting").addoption('--allure_casemerge',
+                                           dest="casemerge",
+                                           default=0,
+                                           type=int,
+                                           help="""If case count per testsuite is greater than it is defined in
+                                           --allure_casemerge, then cases gets transformed into steps and included to
+                                           new testcases.""")
 
     severities = [v for (_, v) in all_of(Severity)]
 
@@ -467,7 +467,7 @@ class AllureAgregatingListener(object):
 
     def __init__(self, impl, config):
         self.impl = impl
-#        self.casemerge = config.option.casemerge
+        self.casemerge = config.option.casemerge
 
         # module's nodeid => TestSuite object
         self.suites = {}
@@ -488,9 +488,9 @@ class AllureAgregatingListener(object):
         """
         for s in self.suites.values():
             if s.tests:  # nobody likes empty suites
-#                if self.casemerge > 0:
-#                    if len(s.tests) > self.casemerge:
-#                        s.tests = self.pytest_casemerge(s)
+                if self.casemerge > 0:
+                    if len(s.tests) > self.casemerge:
+                        s.tests = self.pytest_casemerge(s)
                 s.stop = max(case.stop for case in s.tests)
 
                 known_ids = set()
