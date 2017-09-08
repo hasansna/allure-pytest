@@ -44,13 +44,13 @@ def test_failed_cases_are_not_touched(report_for):
         assert 1==1
 
     @pytest.mark.parametrize("input", [1,2])
-    def test_failed():
+    def test_failed(input):
         assert 1!=1
     """ , extra_run_args=extra_run_args)
 
     assert len(report.findall('test-cases/test-case')) == 4
     assert report.find('name').text.endswith('_(MERGED)')
-    for case_name in ['range_from_1_to_2', 'range_from_3_to_3', 'failed[1]', 'failed[2]']:
+    for case_name in ['range_from_1_to_2', 'range_from_3_to_3', 'test_failed[1]', 'test_failed[2]']:
         xpath=".//a[text()=\"%s\"]" % case_name
         assert report.xpath(xpath) is not None
 
