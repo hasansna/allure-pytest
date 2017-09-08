@@ -548,10 +548,10 @@ class AllureAgregatingListener(object):
         cases = 0
         passed_found = False
         for t in s.tests:
-            if t.status != 'passed': # if test is not green -> leave it as is
+            if t.status != 'passed':  # if test is not green -> leave it as is
                 tests.append(t)
             else:
-                passed_found=True
+                passed_found = True
                 if start == 0:
                     start = t.start
                 steps.append(
