@@ -452,6 +452,7 @@ class AllureHelper(object):
         else:
             raise AttributeError
 
+
 MASTER_HELPER = AllureHelper()
 
 
@@ -460,7 +461,6 @@ def pytest_namespace():
 
 
 class AllureAgregatingListener(object):
-
 
     """
     Listens to pytest hooks to generate reports for common tests.
@@ -539,14 +539,14 @@ class AllureAgregatingListener(object):
                                                         start=testcase.start,  # first case starts the suite!
                                                         stop=None)).tests.append(testcase)
 
-    def pytest_casemerge(self,s):
+    def pytest_casemerge(self, s):
         s.name += "_(MERGED)"
         steps = []
         tests = []
         start = 0
         counter = 0
         cases = 0
-        passed_found=False
+        passed_found = False
         for t in s.tests:
             if t.status != 'passed': # if test is not green -> leave it as is
                 tests.append(t)
@@ -556,12 +556,12 @@ class AllureAgregatingListener(object):
                     start = t.start
                 steps.append(
                     TestStep(name=t.name,
-                         status=t.status,
-                         title="TestCase:"+t.name,
-                         start=t.start,
-                         stop=t.stop,
-                         attachments=t.attachments,
-                         steps=t.steps)
+                             status=t.status,
+                             title="TestCase:" + t.name,
+                             start=t.start,
+                             stop=t.stop,
+                             attachments=t.attachments,
+                             steps=t.steps)
                 )
                 cases += 1
             counter += 1
@@ -576,20 +576,20 @@ class AllureAgregatingListener(object):
                              labels=[],
                              status='passed',
                              steps=steps,
-                             failure = None,
+                             failure=None,
                              id=str(uuid.uuid4()))
                 )
                 start = 0
                 steps = []
                 cases = 0
-                passed_found=False
+                passed_found = False
         return tests
+
 
 CollectFail = namedtuple('CollectFail', 'name status message trace')
 
 
 class AllureCollectionListener(object):
-
 
     """
     Listens to pytest collection-related hooks
