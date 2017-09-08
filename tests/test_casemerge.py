@@ -53,3 +53,35 @@ def test_failed_cases_are_not_touched(report_for):
     for case_name in ['range_from_1_to_2', 'range_from_3_to_3', 'failed[1]', 'failed[2]']:
         xpath=".//a[text()=\"%s\"]" % case_name
         assert report.xpath(xpath) is not None
+
+def test_casemerge_is_less_than_total_case_count(report_for):
+    extra_run_args = list()
+
+    extra_run_args.extend(['--allure_casemerge=3'])
+
+    report = report_for("""
+    import pytest
+    import allure
+    @pytest.mark.parametrize("input", [1,2])
+    def test_passed(input):
+        assert 1==1
+    """ , extra_run_args=extra_run_args)
+
+    assert len(report.findall('test-cases/test-case')) == 2
+    assert not report.find('name').text.endswith('_(MERGED)')
+
+def test_casemerge_equals_total_case_count(report_for):
+    extra_run_args = list()
+
+    extra_run_args.extend(['--allure_casemerge=3'])
+
+    report = report_for("""
+    import pytest
+    import allure
+    @pytest.mark.parametrize("input", [1,2,3])
+    def test_passed(input):
+        assert 1==1
+    """ , extra_run_args=extra_run_args)
+
+    assert len(report.findall('test-cases/test-case')) == 1
+    assert report.find('name').text.endswith('_(MERGED)')
