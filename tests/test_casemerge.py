@@ -20,13 +20,7 @@ def test_smoke(report_for):
     import pytest
     import allure
     @pytest.mark.parametrize("input", [1,2,3])
-    def test_passed1(input):
-        assert 1==1
-
-    def test_passed2():
-        assert 1==1
-
-    def test_passed3():
+    def test_passed(input):
         assert 1==1
     """ , extra_run_args=extra_run_args)
 
@@ -45,14 +39,17 @@ def test_failed_cases_are_not_touched(report_for):
     report = report_for("""
     import pytest
     import allure
-    def test_passed1():
+    @pytest.mark.parametrize("input", [1,2,3])
+    def test_passed(input):
         assert 1==1
 
-    def test_passed2():
-        assert 1==1
-
-    def test_failed1():
+    @pytest.mark.parametrize("input", [1,2])
+    def test_failed():
         assert 1!=1
     """ , extra_run_args=extra_run_args)
 
-    assert len(report.findall('test-cases/test-case')) == 2
+    assert len(report.findall('test-cases/test-case')) == 4
+    assert report.find('name').text.endswith('_(MERGED)')
+    for case_name in ['range_from_1_to_2', 'range_from_3_to_3', 'failed[1]', 'failed[2]']:
+        xpath=".//a[text()=\"%s\"]" % case_name
+        assert report.xpath(xpath) is not None
