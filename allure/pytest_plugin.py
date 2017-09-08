@@ -4,13 +4,14 @@ import pytest
 import argparse
 
 from collections import namedtuple
+from _pytest.junitxml import mangle_testnames
 from six import text_type
 
 from allure.common import AllureImpl, StepContext
 from allure.constants import Status, AttachmentType, Severity, \
     FAILED_STATUSES, Label, SKIPPED_STATUSES
 from allure.utils import parent_module, parent_down_from_module, labels_of, \
-    all_of, get_exception_message, now, mangle_testnames
+    all_of, get_exception_message, now
 from allure.structure import TestCase, TestStep, Attach, TestSuite, Failure, TestLabel
 
 
@@ -26,9 +27,9 @@ def pytest_addoption(parser):
                                            dest="casemerge",
                                            default=0,
                                            type=int,
-                                           help="""If case count per testsuite is greater than it is define in
-                                            --allure_casemerge, then cases gets transformed into steps and included to
-                                            new testcases.""")
+                                           help="""If case count per testsuite is greater than it is defined in
+                                           --allure_casemerge, then cases gets transformed into steps and included to
+                                           new testcases.""")
 
     severities = [v for (_, v) in all_of(Severity)]
 
@@ -311,7 +312,6 @@ class LazyInitStepContext(StepContext):
         if hasattr(l, 'stack'):
             return l
 
-
 class AllureHelper(object):
 
     """
@@ -451,7 +451,6 @@ class AllureHelper(object):
         else:
             raise AttributeError
 
-
 MASTER_HELPER = AllureHelper()
 
 
@@ -468,9 +467,9 @@ class AllureAgregatingListener(object):
     def __init__(self, impl, config):
         self.impl = impl
 
+        self.casemerge = config.option.casemerge
         # module's nodeid => TestSuite object
         self.suites = {}
-        self.casemerge = config.option.casemerge
 
     def pytest_sessionfinish(self):
         """
@@ -489,7 +488,6 @@ class AllureAgregatingListener(object):
 
         if self.casemerge > 0:
             for s in self.suites.values():
-                s = self.suites.get(k)
                 if len(s.tests) > self.casemerge:
                     s.tests = self.pytest_casemerge(s)
 
@@ -539,34 +537,34 @@ class AllureAgregatingListener(object):
                                                         start=testcase.start,  # first case starts the suite!
                                                         stop=None)).tests.append(testcase)
 
+
     def pytest_casemerge(self,s):
         s.name += "_(MERGED)"
         steps = []
         tests = []
         start = 0
-        status = 'passed'
         counter = 0
         cases = 0
-        failure = None
+        passed_found=False
         for t in s.tests:
-            if start == 0:
-                start = t.start
-            if t.status != 'passed':
-                status = t.status
-                if t.failure:
-                    failure = t.failure
-            steps.append(
-                TestStep(name=t.name,
+            if t.status != 'passed': # if test is not green -> leave it as is
+                tests.append(t)
+            else:
+                passed_found=True
+                if start == 0:
+                    start = t.start
+                steps.append(
+                    TestStep(name=t.name,
                          status=t.status,
                          title="TestCase:"+t.name,
                          start=t.start,
                          stop=t.stop,
                          attachments=t.attachments,
                          steps=t.steps)
-            )
+                )
+                cases += 1
             counter += 1
-            cases += 1
-            if len(s.tests) == counter or cases == self.casemerge:
+            if (len(s.tests) == counter or cases == self.casemerge) and passed_found:
                 tests.append(
                     TestCase(name='range_from_%s_to_%s' % (counter - cases + 1, counter),
                              description="Test case count greater than %s. "
@@ -575,15 +573,15 @@ class AllureAgregatingListener(object):
                              stop=max(case.stop for case in s.tests),
                              attachments=[],
                              labels=[],
-                             status=status,
+                             status='passed',
                              steps=steps,
-                             failure = failure,
+                             failure = None,
                              id=str(uuid.uuid4()))
                 )
                 start = 0
-                status = 'passed'
                 steps = []
                 cases = 0
+                passed_found=False
         return tests
 
 CollectFail = namedtuple('CollectFail', 'name status message trace')
