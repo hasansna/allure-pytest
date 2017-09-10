@@ -103,7 +103,6 @@ def test_if_substeps_are_correct(report_for):
 
     for first_step in report.findall('test-cases/test-case/steps/step/title'):
         assert first_step.text == 'Step1'
-    #assert report.xpath('.//a[text()="TestCase:test_passed[1]"]')[0].find('steps/steps/steps/title').text == 'Step2'
     for second_step in report.findall('test-cases/test-case/steps/steps/step/title'):
         assert second_step.text == 'Step2'
 
@@ -121,4 +120,5 @@ def test_if_attachments_are_correct(report_for):
         assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert report.xpath('.//a[text()="TestCase:test_passed[1]"]')[0].find('attachments/attachment').attrib['title'] == 'Attachment'
+    for attachment in report.findall('test-cases/test-case/attachments/attachment'):
+        assert attachment.attrib['title'] == 'Attachment'
