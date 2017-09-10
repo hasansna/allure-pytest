@@ -96,12 +96,12 @@ def test_if_substeps_are_correct(report_for):
     import allure
     @pytest.mark.parametrize("input", [1,2,3])
     def test_passed(input):
-        with allure("Step1"):
-            with allure("Step2"):
+        with allure.step("Step1"):
+            with allure.step("Step2"):
                 assert 1==1
     """ , extra_run_args=extra_run_args)
 
-    assert len(report.findall('test-cases/test-case')) == 3
+    assert len(report.findall('test-cases/test-case')) == 2
     assert len(report.findall('test-cases/test-case/steps')) == 3
     assert len(report.findall('test-cases/test-case/steps/step')) == 3
     assert len(report.findall('test-cases/test-case/steps/steps/step')) == 3
