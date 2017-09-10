@@ -103,8 +103,8 @@ def test_if_substeps_are_correct(report_for):
 
     assert len(report.findall('test-cases/test-case')) == 2
     assert len(report.findall('test-cases/test-case/steps')) == 2  #cases
-    assert len(report.findall('test-cases/test-case/steps/steps/step')) == 3  #Step1
-    assert len(report.findall('test-cases/test-case/steps/steps/steps/step')) == 3  #Step2
+    assert len(report.findall('test-cases/test-case/steps/step/steps/step')) == 3  #Step1
+    assert len(report.findall('test-cases/test-case/steps/step/steps/step/steps/step')) == 3  #Step2
 
 #def test_if_attachments_are_correct(report_for):
 #    extra_run_args = list()
