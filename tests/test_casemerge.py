@@ -87,7 +87,7 @@ def test_casemerge_equals_total_case_count(report_for):
     assert not report.find('name').text.endswith('_(MERGED)')
 
 def test_if_substeps_are_correct(report_for):
-    _run_args = list()
+    extra_run_args = list()
 
     extra_run_args.extend(['--allure_casemerge=2'])
 
@@ -105,7 +105,7 @@ def test_if_substeps_are_correct(report_for):
     assert report.xpath('.//a[text()="test_passed[1]"]').getparent().find('steps/steps/steps/title').text == 'Step2'
 
 def test_if_attachments_are_correct(report_for):
-    _run_args = list()
+    extra_run_args = list()
 
     extra_run_args.extend(['--allure_casemerge=2'])
 
