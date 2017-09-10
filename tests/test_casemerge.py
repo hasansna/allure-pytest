@@ -101,8 +101,10 @@ def test_if_substeps_are_correct(report_for):
                 assert 1==1
     """ , extra_run_args=extra_run_args)
 
+    assert len(report.findall('test-cases/test-case/steps/step/title')) == 3
     for first_step in report.findall('test-cases/test-case/steps/step/title'):
         assert first_step.text == 'Step1'
+    assert len(report.findall('test-cases/test-case/steps/steps/step/title')) == 3
     for second_step in report.findall('test-cases/test-case/steps/steps/step/title'):
         assert second_step.text == 'Step2'
 
@@ -120,5 +122,6 @@ def test_if_attachments_are_correct(report_for):
         assert 1==1
     """ , extra_run_args=extra_run_args)
 
+    assert len(report.findall('test-cases/test-case/attachments/attachment')) == 3
     for attachment in report.findall('test-cases/test-case/attachments/attachment'):
         assert attachment.attrib['title'] == 'Attachment'
