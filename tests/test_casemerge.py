@@ -101,23 +101,25 @@ def test_if_substeps_are_correct(report_for):
                 assert 1==1
     """ , extra_run_args=extra_run_args)
 
+    assert len(report.findall('test-cases/test-case')) == 2
+    assert len(report.findall('test-cases/test-case/steps')) == 3
     assert len(report.findall('test-cases/test-case/steps/step')) == 3
     assert len(report.findall('test-cases/test-case/steps/steps/step')) == 3
 
-def test_if_attachments_are_correct(report_for):
-    extra_run_args = list()
-
-    extra_run_args.extend(['--allure_casemerge=2'])
-
-    report = report_for("""
-    import pytest
-    import allure
-    @pytest.mark.parametrize("input", [1,2,3])
-    def test_passed(input):
-        allure.attach('Attachment', 'Some text')
-        assert 1==1
-    """ , extra_run_args=extra_run_args)
-
-    assert len(report.findall('test_suite/test-cases/test-case/attachments/attachment')) == 3
-    for attachment in report.findall('test_suite/test-cases/test-case/attachments/attachment'):
-        assert attachment.attrib['title'] == 'Attachment'
+#def test_if_attachments_are_correct(report_for):
+#    extra_run_args = list()
+#
+#    extra_run_args.extend(['--allure_casemerge=2'])
+#
+#    report = report_for("""
+#    import pytest
+#    import allure
+#    @pytest.mark.parametrize("input", [1,2,3])
+#    def test_passed(input):
+#        allure.attach('Attachment', 'Some text')
+#        assert 1==1
+#    """ , extra_run_args=extra_run_args)
+#
+#    assert len(report.findall('test_suite/test-cases/test-case/attachments/attachment')) == 3
+#    for attachment in report.findall('test_suite/test-cases/test-case/attachments/attachment'):
+#        assert attachment.attrib['title'] == 'Attachment'
