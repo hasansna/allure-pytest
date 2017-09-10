@@ -278,6 +278,11 @@ More details about allure environment you can know from documentation_.
 
 .. _documentation: https://github.com/allure-framework/allure-core/wiki/Environment
 
+Case merge into steps
+=====================
+It is possible to merge test cases in one using option --allure_casemerge. Parameter value is quantity of test cases to merge in one,
+e.g. --allure_casemerge=1000 will merge 1000 test cases in one test case with name range_from_1_to_1000. Case merge works only for passed cases,
+it will not affect failed, skipped or broken cases. Can be used to improve performance in case of huge amount of tests. 
 
 Development
 ===========
